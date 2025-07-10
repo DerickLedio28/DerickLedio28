@@ -1,0 +1,112 @@
+
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <title>Te Adoro ♥️</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    html, body {
+      height: 100%;
+      background: black;
+      overflow: hidden;
+      font-family: 'Arial', sans-serif;
+    }
+    .background-text {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      font-size: 14px;
+      color: rgba(255, 192, 203, 0.2);
+      display: flex;
+      flex-wrap: wrap;
+      line-height: 1;
+      z-index: 1;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+    }
+    .background-text::after {
+      content: "TE ADORO MARIA LUIZA ".repeat(1000);
+      white-space: pre-wrap;
+    }
+    .main-text {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      color: pink;
+      font-size: 2.3em;
+      font-weight: bold;
+      z-index: 2;
+      text-shadow: 0 0 15px white;
+      text-align: center;
+    }
+    canvas {
+      position: absolute;
+      top: 0;
+      left: 0;
+      z-index: 3;
+      pointer-events: none;
+    }
+  </style>
+</head>
+<body>
+  <div class="background-text"></div>
+  <div class="main-text">Te adoro, Maria Luiza. 💭♥️</div>
+  <canvas id="glow"></canvas>
+  <script>
+    const canvas = document.getElementById('glow');
+    const ctx = canvas.getContext('2d');
+    let width = canvas.width = window.innerWidth;
+    let height = canvas.height = window.innerHeight;
+
+    const sparks = [];
+    function createSpark(x, y) {
+      for (let i = 0; i < 10; i++) {
+        sparks.push({
+          x, y,
+          dx: (Math.random() - 0.5) * 4,
+          dy: (Math.random() - 0.5) * 4,
+          life: 100
+        });
+      }
+    }
+
+    window.addEventListener('mousemove', (e) => {
+      createSpark(e.clientX, e.clientY);
+    });
+
+    window.addEventListener('touchmove', (e) => {
+      const touch = e.touches[0];
+      createSpark(touch.clientX, touch.clientY);
+    });
+
+    function animate() {
+      ctx.clearRect(0, 0, width, height);
+      for (let i = sparks.length - 1; i >= 0; i--) {
+        const s = sparks[i];
+        ctx.beginPath();
+        ctx.arc(s.x, s.y, 2, 0, Math.PI * 2);
+        ctx.fillStyle = `rgba(255, 192, 203, ${s.life / 100})`;
+        ctx.fill();
+        s.x += s.dx;
+        s.y += s.dy;
+        s.life -= 1;
+        if (s.life <= 0) sparks.splice(i, 1);
+      }
+      requestAnimationFrame(animate);
+    }
+
+    animate();
+    window.addEventListener('resize', () => {
+      width = canvas.width = window.innerWidth;
+      height = canvas.height = window.innerHeight;
+    });
+  </script>
+</body>
+</html>
